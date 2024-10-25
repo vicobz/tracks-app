@@ -1,16 +1,23 @@
+// (auth)/_layout.tsx
 import { Stack } from 'expo-router';
-import { AuthProvider } from '../contexts/auth/AuthProvider';
-import { PartnersProvider } from '../contexts/partners/PartnersProvider';
 
-export default function RootLayout() {
+export default function AuthLayout() {
     return (
-        <AuthProvider>
-            <PartnersProvider>
-                <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                </Stack>
-            </PartnersProvider>
-        </AuthProvider>
+        <Stack screenOptions={{
+            headerShown: false,
+        }}>
+            <Stack.Screen 
+                name="signin"
+                options={{
+                    title: "Sign In"
+                }}
+            />
+            <Stack.Screen 
+                name="signup"
+                options={{
+                    title: "Sign Up"
+                }}
+            />
+        </Stack>
     );
 }

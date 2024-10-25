@@ -1,37 +1,41 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../hooks/useAuth';
 
 export default function HomeScreen() {
     const { user } = useAuth();
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.welcomeText}>
-                    Welcome back, {user?.firstName}!
-                </Text>
-                <Text style={styles.pointsText}>
-                    {user?.tracks_balance} Tracks points
-                </Text>
-            </View>
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.welcomeText}>
+                        Welcome back, {user?.firstName}!
+                    </Text>
+                    <Text style={styles.pointsText}>
+                        {user?.tracks_balance} Tracks points
+                    </Text>
+                </View>
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Recent Activity</Text>
-                {/* Ajoutez ici la liste des activités récentes */}
-            </View>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Recent Activity</Text>
+                </View>
 
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Quick Actions</Text>
-                {/* Ajoutez ici les actions rapides */}
-            </View>
-        </ScrollView>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Quick Actions</Text>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    safeArea: {
         flex: 1,
         backgroundColor: '#F8F8F8'
+    },
+    container: {
+        flex: 1,
     },
     header: {
         padding: 20,

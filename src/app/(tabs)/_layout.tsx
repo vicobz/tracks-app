@@ -1,15 +1,19 @@
+// (tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
+import { colors } from '../styles/theme';
 
 export default function TabLayout() {
     return (
-        <Tabs screenOptions={{
-            tabBarActiveTintColor: '#007AFF',
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.backgroundDark }}>
+            <Tabs screenOptions={{
+            tabBarActiveTintColor: colors.secondary,
             tabBarInactiveTintColor: '#8E8E93',
+            headerShown: false,
             tabBarStyle: {
-                borderTopWidth: 1,
-                borderTopColor: '#E5E5EA',
-                backgroundColor: '#FFFFFF'
+                backgroundColor: colors.backgroundDark,
+                borderTopColor: colors.backgroundDark
             }
         }}>
             <Tabs.Screen
@@ -39,6 +43,30 @@ export default function TabLayout() {
                     )
                 }}
             />
+            <Tabs.Screen
+                name="account"
+                options={{
+                    title: 'Account',
+                    tabBarIcon: ({ color, size }) => (
+                        <FontAwesome name="user" size={size} color={color} />
+                    )
+                }}
+            />
+
+            {/* Routes masquées mais accessibles */}
+            <Tabs.Screen
+                name="transactions"
+                options={{
+                    href: null
+                }}
+            />
+            <Tabs.Screen
+                name="partner"
+                options={{
+                    href: null
+                }}
+            />
         </Tabs>
+        </SafeAreaView>
     );
 }

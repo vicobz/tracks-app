@@ -8,6 +8,6 @@ export interface Offer {
     points: number;
     price?: number;
     currency?: string;
-    terms?: string;
+    conditions?: string;
     validUntil?: Date;
 }
