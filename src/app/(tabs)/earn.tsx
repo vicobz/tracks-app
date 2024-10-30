@@ -8,7 +8,7 @@ export default function EarnScreen() {
     const earnPartners = getEarnPartners();
 
     return (
-        <View style={styles.container}>
+        <View style={{ flex: 1, backgroundColor: colors.backgroundDark }}>
             <PartnerGrid 
                 partners={earnPartners} 
                 isLoading={isLoading}

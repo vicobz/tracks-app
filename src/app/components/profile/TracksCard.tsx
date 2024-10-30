@@ -18,7 +18,6 @@ export default function TracksCard({ user }: TracksCardProps) {
                 <Text style={styles.loyaltyNumber}>
                     N° {user.tracks_loyalty_number}
                 </Text>
-                {/* Using a placeholder logo for now */}
                 <Image
                     source={require('../../../assets/images/logo_master_green_white_stroke.png')}
                     style={styles.logo}
@@ -31,9 +30,9 @@ export default function TracksCard({ user }: TracksCardProps) {
 
 const styles = StyleSheet.create({
     container: {
-        minWidth: 300,
-        maxWidth: 900,
-        minHeight: 100,
+        minWidth: 200,
+        maxWidth: 400,
+        minHeight: 180,
         maxHeight: 300,
         padding: 20,
         margin: 5,

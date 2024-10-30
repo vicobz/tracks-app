@@ -16,12 +16,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const mockUser: User = {
                 id: '1',
                 email,
-                firstName: 'John',
-                lastName: 'Doe',
+                firstName: 'Victor',
+                lastName: 'Ravenel',
                 city: 'Paris',
-                address: '123 Rail Street',
-                tracks_balance: 0,
-                tracks_loyalty_number: 'TRK001'
+                address: '123 rue du Chemin de Fer',
+                tracks_balance: 459,
+                tracks_loyalty_number: 'FR0049TU456F2'
             };
             setUser(mockUser);
         } catch (error) {

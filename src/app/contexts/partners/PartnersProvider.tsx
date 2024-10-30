@@ -1,37 +1,84 @@
-import React, { useState } from 'react';
-import { PartnersContext, PartnersContextType } from './PartnersContext';
+// src/contexts/partners/PartnersProvider.tsx
+import React, { useState, useEffect } from 'react';
+import { PartnersContext } from './PartnersContext';
 import { Partner } from '../../types/partner';
 import { Offer } from '../../types/offer';
 
-export function PartnersProvider({ children }: { children: React.ReactNode }) {
+// Données mockées pour le développement
+const MOCK_PARTNERS: Partner[] = [
+    {
+        id: '1',
+        name: 'Green Transport',
+        logo: 'https://picsum.photos/200',
+        type: 'BOTH',
+        description: 'Leader in sustainable transportation',
+        website: 'https://greentransport.com'
+    },
+    {
+        id: '2',
+        name: 'Eco Store',
+        logo: 'https://picsum.photos/201',
+        type: 'EARN',
+        description: 'Your sustainable shopping destination',
+        website: 'https://ecostoreshop.com'
+    },
+    {
+        id: '3',
+        name: 'Clean Energy Co',
+        logo: 'https://picsum.photos/202',
+        type: 'SPEND',
+        description: 'Renewable energy solutions',
+        website: 'https://cleanenergyco.com'
+    }
+];
+
+const MOCK_OFFERS: Offer[] = [
+    {
+        id: '1',
+        partnerId: '1',
+        name: 'Train Paris-Lyon',
+        description: 'Low-carbon train journey',
+        imageUrl: 'https://picsum.photos/203',
+        type: 'EARN',
+        points: 100,
+        price: 50,
+        currency: 'EUR'
+    },
+    {
+        id: '2',
+        partnerId: '1',
+        name: 'Electric Car Rental',
+        description: 'Weekend rental of an electric vehicle',
+        imageUrl: 'https://picsum.photos/204',
+        type: 'SPEND',
+        points: 500,
+        price: 150,
+        currency: 'EUR'
+    }
+];
+
+export const PartnersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [partners, setPartners] = useState<Partner[]>([]);
     const [offers, setOffers] = useState<Offer[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
 
-    const refreshPartners = async () => {
-        setIsLoading(true);
+    const fetchPartners = async () => {
         try {
-            // TODO: Implement actual API call
-            const mockPartners: Partner[] = [
-                {
-                    id: '1',
-                    name: 'Green Railway',
-                    logo: '/assets/partners/railway.png',
-                    type: 'BOTH',
-                    description: 'Eco-friendly rail travel'
-                }
-            ];
-            setPartners(mockPartners);
-        } catch (error) {
-            console.error('Error fetching partners:', error);
+            // Simuler un appel API
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setPartners(MOCK_PARTNERS);
+            setOffers(MOCK_OFFERS);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to fetch partners'));
         } finally {
             setIsLoading(false);
         }
     };
 
-    const getPartnerOffers = (partnerId: string) => {
-        return offers.filter(offer => offer.partnerId === partnerId);
-    };
+    useEffect(() => {
+        fetchPartners();
+    }, []);
 
     const getEarnPartners = () => {
         return partners.filter(partner => 
@@ -45,17 +92,33 @@ export function PartnersProvider({ children }: { children: React.ReactNode }) {
         );
     };
 
+    const getPartnerById = (id: string) => {
+        return partners.find(partner => partner.id === id);
+    };
+
+    const getPartnerOffers = (partnerId: string) => {
+        return offers.filter(offer => offer.partnerId === partnerId);
+    };
+
+    const refreshPartners = async () => {
+        setIsLoading(true);
+        await fetchPartners();
+    };
+
     return (
-        <PartnersContext.Provider value={{
-            partners,
-            offers,
-            isLoading,
-            getPartnerOffers,
-            getEarnPartners,
-            getSpendPartners,
-            refreshPartners
-        }}>
+        <PartnersContext.Provider
+            value={{
+                partners,
+                isLoading,
+                error,
+                getEarnPartners,
+                getSpendPartners,
+                getPartnerById,
+                getPartnerOffers,
+                refreshPartners
+            }}
+        >
             {children}
         </PartnersContext.Provider>
     );
-}
+};
