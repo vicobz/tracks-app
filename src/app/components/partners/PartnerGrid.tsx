@@ -20,6 +20,15 @@ export default function PartnerGrid({ partners, isLoading, type }: PartnerGridPr
     const featuredPartners = partners.filter(p => p.type === 'BOTH');
     const otherPartners = partners.filter(p => p.type !== 'BOTH');
 
+    const navigateToPartner = (partnerId: string) => {
+        const path = type === 'EARN' ? '/earn/[id]' as const : '/spend/[id]' as const;
+            
+        router.push({
+            pathname: path,
+            params: { id: partnerId }
+        });
+    };
+
     const renderSection = (title: string, data: Partner[]) => (
         <View style={styles.section}>
             <Text style={styles.sectionTitle}>{title}</Text>
@@ -28,7 +37,7 @@ export default function PartnerGrid({ partners, isLoading, type }: PartnerGridPr
                 renderItem={({ item }) => (
                     <PartnerCard 
                         partner={item}
-                        onPress={() => router.push(`/(tabs)/partner/${item.id}`)}
+                        onPress={() => navigateToPartner(item.id)}
                     />
                 )}
                 keyExtractor={(item) => item.id}

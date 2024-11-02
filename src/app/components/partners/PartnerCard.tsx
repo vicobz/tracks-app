@@ -20,7 +20,7 @@ export default function PartnerCard({ partner, onPress }: PartnerCardProps) {
                     <Image 
                         source={{ uri: partner.logo }}
                         style={styles.logo}
-                        resizeMode="cover"
+                        resizeMode="contain"
                     />
                 </View>
                 <View style={styles.content}>

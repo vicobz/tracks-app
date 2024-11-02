@@ -8,18 +8,18 @@ import { Offer } from '../../types/offer';
 const MOCK_PARTNERS: Partner[] = [
     {
         id: '1',
-        name: 'Green Transport',
-        logo: 'https://picsum.photos/200',
+        name: 'European Sleeper',
+        logo: 'https://yt3.googleusercontent.com/s3vpPGt5Ch9NFDsuna7Mic2wKlhOGl2_ENcDRR6oTjHbnlJkFldV55xlGMplmmzFoqFGJUlq=s900-c-k-c0x00ffffff-no-rj',
         type: 'BOTH',
-        description: 'Leader in sustainable transportation',
-        website: 'https://greentransport.com'
+        description: 'Night Train Transportation',
+        website: 'https://www.europeansleeper.eu/'
     },
     {
         id: '2',
-        name: 'Eco Store',
-        logo: 'https://picsum.photos/201',
+        name: 'Helios',
+        logo: 'https://www.helios.do/_astro/helios-transparent-logo.BxIHIZ-o.png',
         type: 'EARN',
-        description: 'Your sustainable shopping destination',
+        description: 'Your sustainable banking services',
         website: 'https://ecostoreshop.com'
     },
     {
@@ -29,7 +29,15 @@ const MOCK_PARTNERS: Partner[] = [
         type: 'SPEND',
         description: 'Renewable energy solutions',
         website: 'https://cleanenergyco.com'
-    }
+    },
+    {
+        id: '4',
+        name: 'Rail Europe',
+        logo: 'https://cdn.cookielaw.org/logos/9b5a48b9-7c03-4aa4-b72a-2bfee7d1f994/56866d30-80a3-4ddb-97ab-9495b4140e5a/07532ae6-7f93-4687-843e-494e7b3d1c67/Background=White,_Brand=True.png',
+        type: 'EARN',
+        description: 'Your sustainable shopping destination',
+        website: 'https://ecostoreshop.com'
+    },
 ];
 
 const MOCK_OFFERS: Offer[] = [
@@ -81,13 +89,13 @@ export const PartnersProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, []);
 
     const getEarnPartners = () => {
-        return partners.filter(partner => 
+        return partners.filter(partner =>
             partner.type === 'EARN' || partner.type === 'BOTH'
         );
     };
 
     const getSpendPartners = () => {
-        return partners.filter(partner => 
+        return partners.filter(partner =>
             partner.type === 'SPEND' || partner.type === 'BOTH'
         );
     };

@@ -1,12 +1,14 @@
+// contexts/auth/AuthContext.ts
 import { createContext } from 'react';
 import { User } from '../../types/user';
 
 export interface AuthContextType {
-    user: User | null;
+    isAuthenticated: boolean;
     isLoading: boolean;
+    user: User | null;
     signIn: (email: string, password: string) => Promise<void>;
-    signUp: (userData: Partial<User>, password: string) => Promise<void>;
-    signOut: () => void;
+    signOut: () => Promise<void>;
+    signUp: (email: string, password: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
