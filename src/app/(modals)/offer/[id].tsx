@@ -1,13 +1,15 @@
 // src/app/(modals)/offer/[id].tsx
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, Pressable, Dimensions } from 'react-native';
+import { Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Linking from 'expo-linking';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { usePartners } from '../../hooks/usePartners';
-import { colors } from '../../styles/theme';
+import theme, { colors } from '../../styles/theme';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+
 
 export default function OfferModal() {
     const router = useRouter();
@@ -138,10 +140,12 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000000',
+        backgroundColor: theme.colors.backgroundDark,
     },
     scrollView: {
         flex: 1,
+        zIndex: 1,
+        marginBottom: 0,
     },
     errorContainer: {
         flex: 1,
@@ -170,7 +174,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     content: {
+        flex: 1,
         padding: 16,
+        paddingBottom: Platform.OS === 'ios' ? 100 : 82,
     },
     header: {
         marginBottom: 24,
@@ -236,12 +242,24 @@ const styles = StyleSheet.create({
     },
     ctaContainer: {
         padding: 16,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255, 255, 255, 0.1)',
-        backgroundColor: '#000000',
+        paddingBottom: Platform.OS === 'ios' ? 34 : 16,
+        backgroundColor: theme.colors.backgroundDark,
+        elevation: 8, // For Android
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        zIndex: 2,
+        // borderTopWidth: 1,
+        // borderTopColor: 'rgba(255, 255, 255, 0.05)',
+    },
+    ctaText: {
+        color: theme.colors.backgroundDark,
+        fontSize: 16,
+        fontWeight: '600',
     },
     ctaButton: {
-        backgroundColor: colors.primary,
+        backgroundColor: colors.secondary,
         borderRadius: 12,
         padding: 16,
         alignItems: 'center',
@@ -257,10 +275,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
         shadowOpacity: 0,
         elevation: 0,
-    },
-    ctaText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: '600',
     },
 });

@@ -11,7 +11,7 @@ export const colors = {
     warning: '#FF686B',
     warningDark: 'BA3B46',
     border: '#013438',
-    eggplant: '6C4B5E',
+    eggplant: '#6C4B5E',
     blueLight: 'BDFFFD'
   };
   
