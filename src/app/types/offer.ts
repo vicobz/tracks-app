@@ -9,5 +9,7 @@ export interface Offer {
     price?: number;
     currency?: string;
     conditions?: string;
+    redirectUrl?: string;
+    validFrom?: Date;
     validUntil?: Date;
 }

@@ -9,10 +9,9 @@ import OfferList from '../../components/partners/OfferList';
 export default function PartnerScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
-    const { getPartnerById, getPartnerOffers } = usePartners();
+    const { getPartnerById } = usePartners();
     
     const partner = getPartnerById(id);
-    const offers = getPartnerOffers(id);
     
     if (!partner) {
         router.back();
@@ -44,17 +43,13 @@ export default function PartnerScreen() {
                     <Text style={styles.website}>{partner.website}</Text>
                 )}
 
-                {offers && offers.length > 0 && (
-                    <View style={styles.offersSection}>
-                        <Text style={styles.offersTitle}>Les offres de {partner.name}</Text>
-                        <OfferList 
-                            offers={offers.filter(offer => offer.type === 'EARN')}
-                            onOfferPress={(offerId) => {
-                                router.push('/(modals)/offer/${offerId}');
-                            }}
-                        />
-                    </View>
-                )}
+                <View style={styles.offersSection}>
+                    <Text style={styles.offersTitle}>Les offres de {partner.name}</Text>
+                    <OfferList 
+                        partner={partner}
+                        type="EARN"
+                    />
+                </View>
             </View>
         </ScrollView>
     );

@@ -1,3 +1,6 @@
+// types/partner.ts
+import { Offer } from './offer';
+
 export interface Partner {
     id: string;
     name: string;
@@ -5,4 +8,5 @@ export interface Partner {
     type: 'EARN' | 'SPEND' | 'BOTH';
     description?: string;
     website?: string;
+    offers: Offer[];
 }

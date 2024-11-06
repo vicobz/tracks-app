@@ -4,7 +4,6 @@ import { useRouter } from 'expo-router';
 import { Partner } from '../../types/partner';
 import PartnerCard from './PartnerCard';
 import Loader from '../common/Loader';
-import { colors } from '../../styles/theme';
 
 interface PartnerGridProps {
     partners: Partner[];
