@@ -8,7 +8,7 @@ import { colors } from '../../styles/theme';
 import { Offer } from '../../types/offer';
 import Loader from '../common/Loader';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { enGB } from 'date-fns/locale';
 
 interface OfferListProps {
     partner: Partner | undefined;
@@ -28,10 +28,10 @@ export default function OfferList({ partner, type }: OfferListProps) {
 
     const handleOfferPress = (offer: Offer) => {
         router.push({
-            pathname: '/(modals)/offer/[id]',
-            params: { 
-                id: offer.id, 
-                partnerId: partner.id 
+            pathname: '/offer/[id]',
+            params: {
+                id: offer.id,
+                partnerId: partner.id
             }
         });
     };
@@ -43,7 +43,7 @@ export default function OfferList({ partner, type }: OfferListProps) {
                 style={styles.emptyContainer}
             >
                 <Text style={styles.emptyText}>
-                    Aucune offre {type === 'EARN' ? 'à gagner' : 'à échanger'} disponible
+                    Aucune offre {type === 'EARN' ? 'EARN' : 'SPEND'} disponible
                 </Text>
             </Animated.View>
         );
@@ -79,12 +79,14 @@ export default function OfferList({ partner, type }: OfferListProps) {
                         </Text>
                         <View style={styles.offerDetails}>
                             <View style={styles.pointsContainer}>
-                                <Text style={styles.points}>
+                                <Text
+                                    style={[styles.points, { color: offer.type === 'EARN' ? colors.green : colors.blueAero }]}
+                                >
                                     {type === 'EARN' ? '+' : ''}{offer.points} Tracks
                                 </Text>
                                 {offer.validUntil && (
                                     <Text style={styles.validity}>
-                                        Expire le {format(new Date(offer.validUntil), 'dd MMM yyyy', { locale: fr })}
+                                        Expires on {format(new Date(offer.validUntil), 'dd MMM yyyy', { locale: enGB })}
                                     </Text>
                                 )}
                             </View>

@@ -5,14 +5,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { usePartners } from '../../hooks/usePartners';
 import { colors } from '../../styles/theme';
 import OfferList from '../../components/partners/OfferList';
-/* 
-export default function PartnerScreen() {
-    // ... même contenu que earn/[id].tsx avec adaptations pour SPEND
-    // Principales différences :
-    // - Text affiche "SPEND Partner" au lieu de "EARN Partner"
-    // - Le filtrage des offres utilise offer.type === 'SPEND'
-    // - Les textes sont adaptés au contexte SPEND
-} */
 
 export default function PartnerScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -56,10 +48,8 @@ export default function PartnerScreen() {
                     <View style={styles.offersSection}>
                         <Text style={styles.offersTitle}>Les offres de {partner.name}</Text>
                         <OfferList 
-                            offers={offers.filter(offer => offer.type === 'SPEND')}
-                            onOfferPress={(offerId) => {
-                                router.push('/(modals)/offer/${offerId}');
-                            }}
+                            partner={partner}
+                            type="SPEND"
                         />
                     </View>
                 )}
