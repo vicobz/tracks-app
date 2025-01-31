@@ -19,7 +19,7 @@ export default function EarnLayout() {
             <Stack.Screen 
                 name="index"
                 options={{ 
-                    title: 'Gagnez des Tracks',
+                    title: 'EARN',
                     headerShown: true,
                 }}
             />

@@ -4,12 +4,78 @@ import { PartnersContext } from './PartnersContext';
 import { Partner } from '../../types/partner';
 import { Offer } from '../../types/offer';
 
-const MOCK_PARTNERS: Partner[] = [
+const MOCK_PARTNERS: Partner[] = [    
+    {
+        id: '0',
+        name: 'SNCF Connect',
+        logo: 'https://play-lh.googleusercontent.com/cjPif4A-0poQHNV4ONFBtbNY4PWJvkBfLkJp7OO01LSQM_FjQEFsSYMSrUXHkI0kffY=w240-h480-rw',
+        type: 'BOTH',
+        description: 'Pour une mobilité plus simple, plus fluide et plus propre, partout en France.',
+        website: 'https://www.sncf-connect.com',
+        offers: [
+            {
+                id: '201',
+                partnerId: '2',
+                name: 'Carte Avantage Jeune',
+                description: '12-27 ans',
+                imageUrl: 'https://www.sncf-connect.com/assets/styles/scale_and_crop_1440x320/public/media/2022-01/1440x795_jeunes2.jpg?itok=MVeeJqrF',
+                type: 'EARN',
+                points: 125,
+                price: 49,
+                currency: 'EUR',
+                conditions: 'Réservé aux 12-27 ans. Carte valable un an.',
+                validUntil: new Date('2024-12-31'),
+                redirectUrl: 'https://www.sncf-connect.com/app/catalogue/description/carte-avantage-jeune'
+            },
+            {
+                id: '202',
+                partnerId: '2',
+                name: 'Carte Avantage Adulte',
+                description: '27-59 ans',
+                imageUrl: 'https://www.sncf-connect.com/assets/styles/scale_and_crop_1440x320/public/media/2022-01/adultes.jpg?itok=xL8AsXwX',
+                type: 'EARN',
+                points: 125,
+                price: 49,
+                currency: 'EUR',
+                conditions: 'Réservé aux 27-59 ans. Carte valable un an.',
+                validUntil: new Date('2024-12-31'),
+                redirectUrl: 'https://www.sncf-connect.com/app/catalogue/description/carte-avantage-adulte'
+            },
+            {
+                id: '203',
+                partnerId: '2',
+                name: 'Carte Liberté',
+                description: '27-59 ans',
+                imageUrl: 'https://www.sncf-connect.com/assets/styles/scale_and_crop_1440x320/public/media/2024-11/femme-a-bord-du-train.jpg?itok=RJMfu-j1',
+                type: 'EARN',
+                points: 1000,
+                price: 349,
+                currency: 'EUR',
+                conditions: 'Carte premium donnant accès à des réductions maximales. Valable un an.',
+                validUntil: new Date('2024-12-31'),
+                redirectUrl: 'https://www.sncf-connect.com/app/catalogue/description/carte-liberte'
+            },
+            {
+                id: '204',
+                partnerId: '2',
+                name: 'Réservation d\'un voyage',
+                description: 'Gagnez des points Tracks à l\'achat d\'un billet de train',
+                imageUrl: 'https://www.sncf-connect.com/assets/media/2024-12/lp-ouigo_11.jpg',
+                type: 'EARN',
+                points: 1,  // Ce sera calculé comme 1% du prix d'achat
+                price: 1,
+                currency: 'EUR',
+                conditions: 'Points Tracks équivalents à 1% du montant de votre achat.',
+                validUntil: new Date('2024-12-31'),
+                redirectUrl: 'https://www.sncf-connect.com/reservation'
+            }
+        ]
+    },
     {
         id: '1',
         name: 'European Sleeper',
         logo: 'https://yt3.googleusercontent.com/s3vpPGt5Ch9NFDsuna7Mic2wKlhOGl2_ENcDRR6oTjHbnlJkFldV55xlGMplmmzFoqFGJUlq=s900-c-k-c0x00ffffff-no-rj',
-        type: 'BOTH',
+        type: 'EARN',
         description: 'Night Train Transportation',
         website: 'https://www.europeansleeper.eu/',
         offers: [
@@ -75,7 +141,7 @@ const MOCK_PARTNERS: Partner[] = [
                 points: 1000,
                 conditions: 'New customers only. Account must remain active for 3 months.',
                 validUntil: new Date('2024-12-31'),
-                redirectUrl: 'https://www.helios.do/account/register'
+                redirectUrl: 'https://www.helios.do/inscription/'
             },
             {
                 id: '202',
@@ -87,7 +153,7 @@ const MOCK_PARTNERS: Partner[] = [
                 points: 50,
                 conditions: 'Minimum purchase amount: 20€',
                 validUntil: new Date('2024-12-31'),
-                redirectUrl: 'https://www.helios.do/card'
+                redirectUrl: 'https://www.helios.do/inscription'
             },
             {
                 id: '203',
@@ -99,7 +165,7 @@ const MOCK_PARTNERS: Partner[] = [
                 points: 500,
                 conditions: 'Referral must open and maintain an active account for 1 month.',
                 validUntil: new Date('2024-12-31'),
-                redirectUrl: 'https://www.helios.do/refer'
+                redirectUrl: 'https://www.helios.do/inscription/'
             }
         ]
     },
@@ -189,7 +255,7 @@ const MOCK_PARTNERS: Partner[] = [
                 currency: 'EUR',
                 conditions: 'Points awarded after travel completion.',
                 validUntil: new Date('2024-12-31'),
-                redirectUrl: 'https://www.raileurope.com/direct'
+                redirectUrl: 'https://www.raileurope.com/'
             },
             {
                 id: '403',
@@ -203,10 +269,56 @@ const MOCK_PARTNERS: Partner[] = [
                 currency: 'EUR',
                 conditions: 'Minimum 3 nights stay required.',
                 validUntil: new Date('2024-12-31'),
-                redirectUrl: 'https://www.raileurope.com/packages'
+                redirectUrl: 'https://www.raileurope.com/'
             }
         ]
-    }
+    },
+    {
+        id: '5',
+        name: 'Loewi',
+        logo: 'https://loewi.fr/cdn/shop/files/LogoLoewiLettres.png', // Lien fictif
+        type: 'EARN',
+        description: 'Location de vélos électriques reconditionnés pour une mobilité durable',
+        website: 'https://www.loewi.fr',
+        offers: [
+            {
+                id: '501',
+                partnerId: '5',
+                name: 'Abonnement mensuel',
+                description: 'Louez un vélo électrique reconditionné pour 29€/mois, avec assurance et entretien inclus.',
+                imageUrl: 'https://picsum.photos/800/406',
+                type: 'EARN',
+                points: 200,
+                conditions: 'Location minimale de 12 mois, résiliable avec un préavis d’un mois après cette période.',
+                validUntil: new Date('2024-12-31'),
+                redirectUrl: 'https://www.loewi.fr/location'
+            },
+            {
+                id: '502',
+                partnerId: '5',
+                name: 'Essai gratuit',
+                description: 'Profitez d’un essai gratuit de 7 jours de votre vélo électrique reconditionné.',
+                imageUrl: 'https://picsum.photos/800/407',
+                type: 'EARN',
+                points: 100,
+                conditions: 'Essai disponible pour les nouveaux clients uniquement.',
+                validUntil: new Date('2024-12-31'),
+                redirectUrl: 'https://www.loewi.fr/essai-gratuit'
+            },
+            {
+                id: '503',
+                partnerId: '5',
+                name: 'Offre de parrainage',
+                description: 'Parrainez un ami pour un abonnement de vélo électrique, gagnez des points de fidélité pour chaque inscription validée.',
+                imageUrl: 'https://picsum.photos/800/408',
+                type: 'EARN',
+                points: 150,
+                conditions: 'L’ami parrainé doit souscrire un abonnement d’au moins 12 mois.',
+                validUntil: new Date('2024-12-31'),
+                redirectUrl: 'https://www.loewi.fr/parrainage'
+            }
+        ]
+    },
 ];
 
 export const PartnersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

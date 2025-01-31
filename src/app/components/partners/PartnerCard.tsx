@@ -34,9 +34,6 @@ export default function PartnerCard({ partner, onPress }: PartnerCardProps) {
                             {partner.name}
                         </Text>
                     </View>
-                    <Text style={styles.partnerType}>
-                        {partner.type === 'BOTH' ? 'EARN & SPEND Partner' : `${partner.type} Partner`}
-                    </Text>
                 </View>
             </View>
         </TouchableOpacity>

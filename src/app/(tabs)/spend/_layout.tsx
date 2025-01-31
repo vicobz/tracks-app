@@ -19,7 +19,7 @@ export default function SpendLayout() {
             <Stack.Screen 
                 name="index"
                 options={{ 
-                    title: 'Dépensez vos Tracks',
+                    title: 'SPEND',
                     headerShown: true,
                 }}
             />

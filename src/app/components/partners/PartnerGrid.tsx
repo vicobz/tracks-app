@@ -52,20 +52,20 @@ export default function PartnerGrid({ partners, isLoading, type }: PartnerGridPr
             ListHeaderComponent={
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>
-                        {type === 'EARN' ? 'Earn Tracks' : 'Spend Tracks'}
+                        {type === 'EARN' ? 'Collectez des Tracks' : 'Dépensez vos Tracks'}
                     </Text>
                     <Text style={styles.headerSubtitle}>
                         {type === 'EARN' 
-                            ? 'Make sustainable purchases and earn points'
-                            : 'Redeem your points for sustainable products'}
+                            ? 'Gagnez des points en achetant des produits et des services durables 🌱'
+                            : 'Convertissez vos points produits et services éco-responsables 🌱'}
                     </Text>
                 </View>
             }
             data={[{ key: 'content' }]}
             renderItem={() => (
                 <View>
-                    {featuredPartners.length > 0 && renderSection('Featured Partners', featuredPartners)}
-                    {otherPartners.length > 0 && renderSection('All Partners', otherPartners)}
+                    {featuredPartners.length > 0 && renderSection('Nos favoris', featuredPartners)}
+                    {otherPartners.length > 0 && renderSection('Toutes les offres', otherPartners)}
                 </View>
             )}
             contentContainerStyle={styles.container}

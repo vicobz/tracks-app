@@ -30,10 +30,6 @@ export default function PartnerScreen() {
             </View>
 
             <View style={styles.content}>
-                <Text style={styles.partnerType}>
-                    {partner.type === 'BOTH' ? 'EARN & SPEND Partner' : 'EARN Partner'}
-                </Text>
-                
                 <Text style={styles.name}>{partner.name}</Text>
                 
                 {partner.description && (

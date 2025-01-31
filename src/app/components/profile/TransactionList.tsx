@@ -88,14 +88,6 @@ export default function TransactionList({
         return (
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Recent Transactions</Text>
-                {limit && (
-                    <Link href="/(tabs)/transactions" asChild>
-                        <TouchableOpacity style={styles.viewAllButton}>
-                            <Text style={styles.viewAllText}>View All</Text>
-                            <Feather name="chevron-right" size={16} color={colors.secondary} />
-                        </TouchableOpacity>
-                    </Link>
-                )}
             </View>
         );
     };

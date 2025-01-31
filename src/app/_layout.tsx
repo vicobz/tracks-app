@@ -4,14 +4,15 @@ import { AuthProvider } from './contexts/auth/AuthProvider';
 import { PartnersProvider } from './contexts/partners/PartnersProvider';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors } from './styles/theme';
+// import 'expo-dev-client';
 
 export default function RootLayout() {
     return (
         <SafeAreaProvider>
             <AuthProvider>
                 <PartnersProvider>
-                    <Stack 
-                        screenOptions={{ 
+                    <Stack
+                        screenOptions={{
                             headerStyle: {
                                 backgroundColor: colors.backgroundDark,
                             },
@@ -22,13 +23,13 @@ export default function RootLayout() {
                             headerBackTitle: 'Retour',
                         }}
                     >
-                        <Stack.Screen 
-                            name="(auth)" 
-                            options={{ headerShown: false }} 
+                        <Stack.Screen
+                            name="(auth)"
+                            options={{ headerShown: false }}
                         />
-                        <Stack.Screen 
-                            name="(tabs)" 
-                            options={{ headerShown: false }} 
+                        <Stack.Screen
+                            name="(tabs)"
+                            options={{ headerShown: false }}
                         />
                     </Stack>
                 </PartnersProvider>

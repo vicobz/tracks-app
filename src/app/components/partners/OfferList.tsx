@@ -1,6 +1,6 @@
 // components/partners/OfferList.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Partner } from '../../types/partner';
@@ -14,8 +14,6 @@ interface OfferListProps {
     partner: Partner | undefined;
     type: 'EARN' | 'SPEND';
 }
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function OfferList({ partner, type }: OfferListProps) {
     const router = useRouter();
@@ -38,66 +36,75 @@ export default function OfferList({ partner, type }: OfferListProps) {
 
     if (offers.length === 0) {
         return (
-            <Animated.View
-                entering={FadeInDown}
-                style={styles.emptyContainer}
-            >
+            <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}>
                     Aucune offre {type === 'EARN' ? 'EARN' : 'SPEND'} disponible
                 </Text>
-            </Animated.View>
+            </View>
         );
     }
 
     return (
         <View style={styles.container}>
             {offers.map((offer, index) => (
-                <AnimatedPressable
+                <Animated.View
                     key={offer.id}
-                    style={({ pressed }) => [
-                        styles.offerCard,
-                        pressed && styles.offerCardPressed
-                    ]}
-                    onPress={() => handleOfferPress(offer)}
                     entering={FadeInDown.delay(index * 100)}
-                    android_ripple={{
-                        color: 'rgba(255, 255, 255, 0.1)',
-                        borderless: false
-                    }}
+                    style={styles.cardOuterContainer}
                 >
-                    <Image
-                        source={{ uri: offer.imageUrl }}
-                        style={styles.offerImage}
-                        resizeMode="cover"
-                    />
-                    <View style={styles.offerContent}>
-                        <Text style={styles.offerName} numberOfLines={1}>
-                            {offer.name}
-                        </Text>
-                        <Text style={styles.offerDescription} numberOfLines={2}>
-                            {offer.description}
-                        </Text>
-                        <View style={styles.offerDetails}>
-                            <View style={styles.pointsContainer}>
-                                <Text
-                                    style={[styles.points, { color: offer.type === 'EARN' ? colors.green : colors.blueAero }]}
-                                >
-                                    {type === 'EARN' ? '+' : ''}{offer.points} Tracks
-                                </Text>
-                                {offer.validUntil && (
-                                    <Text style={styles.validity}>
-                                        Expires on {format(new Date(offer.validUntil), 'dd MMM yyyy', { locale: enGB })}
+                    <View style={styles.cardShadowContainer}>
+                        <View style={styles.cardContainer}>
+                            <Pressable
+                                style={({ pressed }) => [
+                                    styles.card,
+                                    pressed && styles.cardPressed
+                                ]}
+                                onPress={() => handleOfferPress(offer)}
+                            >
+                                <View style={styles.imageWrapper}>
+                                    <Image
+                                        source={{ uri: offer.imageUrl }}
+                                        style={styles.image}
+                                        resizeMode="cover"
+                                    />
+                                </View>
+
+                                <View style={styles.contentContainer}>
+                                    <Text style={styles.name} numberOfLines={1}>
+                                        {offer.name}
                                     </Text>
-                                )}
-                            </View>
-                            {offer.price && (
-                                <Text style={styles.price}>
-                                    {offer.price} {offer.currency}
-                                </Text>
-                            )}
+                                    <Text style={styles.description} numberOfLines={2}>
+                                        {offer.description}
+                                    </Text>
+                                    <View style={styles.details}>
+                                        <View style={styles.pointsContainer}>
+                                            <Text
+                                                style={[
+                                                    styles.points,
+                                                    { color: offer.type === 'EARN' ? colors.green : colors.blueAero }
+                                                ]}
+                                            >
+                                                {type === 'EARN' ? '+' : ''}{offer.points} Tracks
+                                            </Text>
+                                            {offer.validUntil && (
+                                                <Text style={styles.validity}>
+                                                    Expires on {format(new Date(offer.validUntil), 'dd MMM yyyy', { locale: enGB })}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        {offer.price && (
+                                            <View style={styles.priceContainer}>
+                                                <Text style={styles.price}>
+                                                    {offer.price} {offer.currency}
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                </View>
+                            </Pressable>
                         </View>
                     </View>
-                </AnimatedPressable>
+                </Animated.View>
             ))}
         </View>
     );
@@ -106,59 +113,70 @@ export default function OfferList({ partner, type }: OfferListProps) {
 const styles = StyleSheet.create({
     container: {
         gap: 16,
-        paddingHorizontal: 16,
-        paddingBottom: 16,
     },
-    emptyContainer: {
-        padding: 32,
-        alignItems: 'center',
-        justifyContent: 'center',
+    cardOuterContainer: {
+        marginHorizontal: 16,
+        marginBottom: 8,
     },
-    emptyText: {
-        color: 'rgba(255, 255, 255, 0.6)',
-        fontSize: 16,
-        textAlign: 'center',
+    cardShadowContainer: {
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: {
+                    width: 0,
+                    height: 4,
+                },
+                shadowOpacity: 0.8,
+                shadowRadius: 8,
+            },
+            android: {
+                elevation: 8,
+            },
+        }),
     },
-    offerCard: {
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        borderRadius: 12,
+    cardContainer: {
+        borderRadius: 16,
         overflow: 'hidden',
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
     },
-    offerCardPressed: {
+    card: {
+        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    },
+    cardPressed: {
         opacity: 0.8,
         transform: [{ scale: 0.98 }],
-        shadowOpacity: 0.2,
-        elevation: 2,
     },
-    offerImage: {
+    imageWrapper: {
         width: '100%',
-        height: 160,
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        height: 180,
+        backgroundColor: colors.backgroundDark,
     },
-    offerContent: {
+    image: {
+        width: '100%',
+        height: '100%',
+    },
+    contentContainer: {
         padding: 16,
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
     },
-    offerName: {
+    name: {
         fontSize: 18,
         fontWeight: '600',
         color: '#FFFFFF',
         marginBottom: 8,
     },
-    offerDescription: {
+    description: {
         fontSize: 14,
         color: 'rgba(255, 255, 255, 0.8)',
-        marginBottom: 12,
+        marginBottom: 16,
         lineHeight: 20,
     },
-    offerDetails: {
+    details: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
+        paddingTop: 16,
+        borderTopWidth: 1,
+        borderTopColor: 'rgba(255, 255, 255, 0.05)',
     },
     pointsContainer: {
         flex: 1,
@@ -167,16 +185,33 @@ const styles = StyleSheet.create({
     points: {
         fontSize: 16,
         fontWeight: '600',
-        color: colors.secondary,
         marginBottom: 4,
     },
     validity: {
         fontSize: 12,
-        color: 'rgba(255, 255, 255, 0.6)',
+        color: 'rgba(255, 255, 255, 0.5)',
+    },
+    priceContainer: {
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderRadius: 8,
+        padding: 8,
     },
     price: {
         fontSize: 14,
-        fontWeight: 'bold',
-        color: 'rgba(255, 255, 255, 0.9)',
+        fontWeight: '600',
+        color: '#FFFFFF',
+    },
+    emptyContainer: {
+        margin: 16,
+        padding: 32,
+        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    emptyText: {
+        color: 'rgba(255, 255, 255, 0.6)',
+        fontSize: 16,
+        textAlign: 'center',
     },
 });

@@ -8,8 +8,27 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
+*.log
+
 web-build/
+
 .yarn
+.yarn/cache/
+.yarn/install-state.gz
+
+ios/Pods/
+ios/Podfile.lock
+ios/build/
+ios/*.xcworkspace/
+ios/tracksapp.xcodeproj/project.pbxproj
+ios/tracksapp/Images.xcassets/AppIcon.appiconset/*
+
+android/app/build/
+android/app/src/main/res
+android/.gradle/
+android/.idea/
+node_modules/
+
 
 # macOS
 .DS_Store
