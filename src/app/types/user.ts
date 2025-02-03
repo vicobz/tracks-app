@@ -3,8 +3,8 @@ export interface User {
     email: string;
     firstName: string;
     lastName: string;
-    city: string;
-    address: string;
-    tracks_balance: number;
-    tracks_loyalty_number: string;
+    // city: string;
+    // address: string;
+    tracksBalance: number;
+    tracksLoyaltyNumber: string;
 }
