@@ -1,5 +1,8 @@
 // src/api/auth.service.ts
-import { apiClient } from './client';
+/**
+ * Authentication service implementation
+ */
+import { createApiClient } from './client';
 import { TokenStorage } from '../storage/token.storage';
 import {
     AuthResponse,
@@ -8,50 +11,105 @@ import {
     RefreshTokenRequest,
     ResetPasswordRequest
 } from '../types/auth.types';
-import { API, getAuthUrl } from './constants';
+import { SERVICES } from './constants';
+
+const authClient = createApiClient({
+    baseURL: SERVICES.AUTH.BASE_URL
+});
 
 export class AuthService {
-    static async login(data: LoginRequest): Promise<AuthResponse> {
-        const response = await apiClient.post<AuthResponse>(
-            getAuthUrl(API.AUTH.ENDPOINTS.LOGIN),
-            data
-        );
-        await TokenStorage.saveTokens(response.data.access_token, response.data.refresh_token);
-        return response.data;
-    }
-
+    /**
+     * Registers a new user
+     * @param data User registration data
+     */
     static async register(data: RegisterRequest): Promise<AuthResponse> {
-        const response = await apiClient.post<AuthResponse>(
-            getAuthUrl(API.AUTH.ENDPOINTS.REGISTER),
-            data
-        );
-        await TokenStorage.saveTokens(response.data.access_token, response.data.refresh_token);
-        return response.data;
+        try {
+            const response = await authClient.post<AuthResponse>(
+                SERVICES.AUTH.ENDPOINTS.REGISTER,
+                data
+            );
+
+            await TokenStorage.saveTokens(
+                response.data.access_token,
+                response.data.refresh_token
+            );
+
+            return response.data;
+        } catch (error: any) {
+            throw this.handleError(error);
+        }
     }
 
+    /**
+     * Initiates a user login session
+     */
+    static async login(data: LoginRequest): Promise<AuthResponse> {
+        try {
+            const response = await authClient.post<AuthResponse>(
+                SERVICES.AUTH.ENDPOINTS.LOGIN,
+                data
+            );
+
+            await TokenStorage.saveTokens(
+                response.data.access_token,
+                response.data.refresh_token
+            );
+
+            return response.data;
+        } catch (error: any) {
+            throw this.handleError(error);
+        }
+    }
+
+    /**
+     * Refreshes the authentication token
+     */
     static async refreshToken(data: RefreshTokenRequest): Promise<AuthResponse> {
-        const response = await apiClient.post<AuthResponse>(
-            getAuthUrl(API.AUTH.ENDPOINTS.REFRESH_TOKEN),
-            data
-        );
-        await TokenStorage.saveTokens(response.data.access_token, response.data.refresh_token);
-        return response.data;
+        try {
+            const response = await authClient.post<AuthResponse>(
+                SERVICES.AUTH.ENDPOINTS.REFRESH_TOKEN,
+                data
+            );
+
+            await TokenStorage.saveTokens(
+                response.data.access_token,
+                response.data.refresh_token
+            );
+
+            return response.data;
+        } catch (error: any) {
+            throw this.handleError(error);
+        }
     }
 
-    static async resetPassword(data: ResetPasswordRequest): Promise<void> {
-        await apiClient.post(
-            getAuthUrl(API.AUTH.ENDPOINTS.RESET_PASSWORD),
-            data
-        );
-    }
-
+    /**
+     * Logs out the current user
+     */
     static async logout(): Promise<void> {
-        await apiClient.post(getAuthUrl(API.AUTH.ENDPOINTS.LOGOUT));
-        await TokenStorage.clearTokens();
+        try {
+            await authClient.post(SERVICES.AUTH.ENDPOINTS.LOGOUT);
+            await TokenStorage.clearTokens();
+        } catch (error: any) {
+            throw this.handleError(error);
+        }
     }
 
+    /**
+     * Checks if user is authenticated
+     */
     static async checkAuth(): Promise<boolean> {
         const token = await TokenStorage.getAccessToken();
         return !!token;
+    }
+
+    /**
+     * Standardizes error handling across service methods
+     */
+    private static handleError(error: any) {
+        return {
+            code: error.response?.status || 500,
+            message: error.response?.data?.message || 'Operation failed',
+            details: error.response?.data
+        };
     }
 }

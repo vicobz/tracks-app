@@ -1,26 +1,13 @@
 // src/app/(auth)/signup.tsx
 import { useState } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 import { Link, useRouter } from 'expo-router';
 import { colors } from '../styles/theme';
 import { useToast } from '../contexts/toast/ToastContext';
-import {
-    isValidEmail,
-    isValidPassword,
-    isValidName,
-    getPasswordStrength
-} from '../utils/validation';
+import { isValidEmail, isValidPassword, isValidName, getPasswordStrength } from '../utils/validation';
+import { AUTH_MESSAGES, t } from '../constants/Messages';
+
 
 interface FormErrors {
     email?: string;
@@ -34,7 +21,7 @@ export default function SignUpScreen() {
     const { signUp, isLoading } = useAuth();
     const { showToast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -48,68 +35,95 @@ export default function SignUpScreen() {
         message: ''
     });
 
-    const validateForm = (): boolean => {
-        const errors: FormErrors = {};
-        let isValid = true;
-
-        if (!isValidEmail(formData.email)) {
-            errors.email = 'Please enter a valid email address';
-            isValid = false;
-        }
-
-        if (!isValidPassword(formData.password)) {
-            errors.password = 'Password must be at least 8 characters with letters and numbers';
-            isValid = false;
-        }
-
-        if (!isValidName(formData.firstName)) {
-            errors.firstName = 'First name is required';
-            isValid = false;
-        }
-
-        if (!isValidName(formData.lastName)) {
-            errors.lastName = 'Last name is required';
-            isValid = false;
-        }
-
-        setFormErrors(errors);
-        return isValid;
-    };
-
     const handleChangePassword = (password: string) => {
         setFormData(prev => ({ ...prev, password }));
         setPasswordStrength(getPasswordStrength(password));
     };
 
     const handleSignUp = async () => {
+        console.log('Starting sign up process');
         if (!validateForm()) {
-            showToast('Please correct the form errors', 'error');
+            console.log('Form validation failed');
+            showToast(t(AUTH_MESSAGES.ERRORS.FORM_VALIDATION), 'error');
             return;
         }
-
+    
+        console.log('Form validated successfully, proceeding with signup');
         setIsSubmitting(true);
         try {
-            await signUp({
+            const userData = {
                 email: formData.email.trim(),
                 password: formData.password,
-                firstName: formData.firstName.trim(),
-                lastName: formData.lastName.trim()
+                first_name: formData.firstName.trim(),
+                last_name: formData.lastName.trim()
+            };
+            console.log('Submitting user data:', {
+                ...userData,
+                password: '***' // masquer le mot de passe dans les logs
             });
-            showToast('Account created successfully!', 'success');
+    
+            await signUp(userData);
+            console.log('Signup successful');
+            showToast(t(AUTH_MESSAGES.SUCCESS.ACCOUNT_CREATED), 'success');
             router.replace('/(tabs)/');
         } catch (err: any) {
-            showToast(err.message || 'Failed to create account', 'error');
+            console.error('Signup error:', err);
+            showToast(t(AUTH_MESSAGES.ERRORS.ACCOUNT_CREATION), 'error');
         } finally {
             setIsSubmitting(false);
         }
     };
 
+    const validateForm = (): boolean => {
+        console.log('Starting form validation');
+        const errors: FormErrors = {};
+        let isValid = true;
+    
+        console.log('Validating form data:', {
+            email: formData.email,
+            passwordLength: formData.password.length,
+            password: formData.password,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+        });
+    
+        if (!isValidEmail(formData.email)) {
+            console.log('Email validation failed');
+            errors.email = t(AUTH_MESSAGES.ERRORS.INVALID_EMAIL);
+            isValid = false;
+        }
+    
+        if (!isValidPassword(formData.password)) {
+            console.log('Password validation failed');
+            errors.password = t(AUTH_MESSAGES.ERRORS.INVALID_PASSWORD);
+            isValid = false;
+        }
+    
+        if (!isValidName(formData.firstName)) {
+            console.log('First name validation failed');
+            errors.firstName = t(AUTH_MESSAGES.ERRORS.INVALID_NAME);
+            isValid = false;
+        }
+    
+        if (!isValidName(formData.lastName)) {
+            console.log('Last name validation failed');
+            errors.lastName = t(AUTH_MESSAGES.ERRORS.INVALID_NAME);
+            isValid = false;
+        }
+    
+        console.log('Form errors:', errors);
+        console.log('Form is valid:', isValid);
+    
+        setFormErrors(errors);
+        return isValid;
+    };
+
     return (
-        <KeyboardAvoidingView 
-            style={styles.container} 
+        <KeyboardAvoidingView
+            style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <ScrollView 
+            <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps="handled"
             >
@@ -198,9 +212,9 @@ export default function SignUpScreen() {
                             )}
                         </TouchableOpacity>
                     </View>
-                    
+
                     <Link href="/(auth)/signin" asChild>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.linkButton}
                             disabled={isSubmitting || isLoading}
                         >
