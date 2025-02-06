@@ -1,14 +1,16 @@
 // app/index.tsx
 import { Redirect } from 'expo-router';
 import { useAuth } from './hooks/useAuth';
-import { View, ActivityIndicator } from 'react-native';
-import { colors } from './styles/theme';
+import Loader from './components/common/Loader';
 
 export default function Index() {
     const { isAuthenticated, isLoading } = useAuth();
 
-    // Afficher un loader pendant la vérification de l'authentification
     if (isLoading) {
+        return <Loader />;
+    }
+
+    /* if (isLoading) {
         return (
             <View style={{ 
                 flex: 1, 
@@ -19,8 +21,8 @@ export default function Index() {
                 <ActivityIndicator size="large" color={colors.primary} />
             </View>
         );
-    }
+    } */
 
-    // Redirection en fonction de l'état d'authentification
+    // Redirect based on authentication state using the existing folder structure
     return <Redirect href={isAuthenticated ? "/(tabs)/earn" : "/(auth)/signin"} />;
 }

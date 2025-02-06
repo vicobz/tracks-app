@@ -4,7 +4,6 @@ import { AuthContext } from './AuthContext';
 import { AuthService } from '../../api/auth.service';
 import { TokenStorage } from '../../storage/token.storage';
 import { User } from '../../types/user';
-import { useProtectedRoute } from '../../hooks/useProtectedRoute';
 import { ApiError } from '../../types/auth.types';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -12,26 +11,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<ApiError | null>(null);
 
-    useProtectedRoute(user);
-
-    useEffect(() => {
-        checkAuthState();
-    }, []);
-
     const checkAuthState = async () => {
         try {
-            const isAuthenticated = await AuthService.checkAuth();
-            if (!isAuthenticated) {
+            const refreshToken = await TokenStorage.getRefreshToken();
+            
+            if (!refreshToken) {
                 setUser(null);
                 return;
             }
-            // TODO: Implement user info endpoint and fetch user data here
+
+            const authResponse = await AuthService.refreshToken({ refresh_token: refreshToken });
+            setUser({
+                id: authResponse.user.id,
+                email: authResponse.user.email,
+                firstName: authResponse.user.first_name,
+                lastName: authResponse.user.last_name,
+                tracksBalance: authResponse.user.tracks_balance,
+                tracksLoyaltyNumber: authResponse.user.loyalty_number,
+            });
         } catch (error) {
-            console.error('Auth state check failed:', error);
+            await TokenStorage.clearTokens();
+            setUser(null);
+            setError(error as ApiError);
         } finally {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        checkAuthState();
+    }, []);
 
     const signIn = async (email: string, password: string) => {
         setIsLoading(true);
@@ -45,8 +54,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 lastName: response.user.last_name,
                 tracksBalance: response.user.tracks_balance,
                 tracksLoyaltyNumber: response.user.loyalty_number,
-                //city: '', // These fields are not in the API response
-                // address: '', // Consider updating the User type or the API
             });
         } catch (error) {
             setError(error as ApiError);
@@ -73,8 +80,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 lastName: response.user.last_name,
                 tracksBalance: response.user.tracks_balance,
                 tracksLoyaltyNumber: response.user.loyalty_number,
-                //city: '',
-                //address: '',
             });
         } catch (error) {
             setError(error as ApiError);
@@ -125,4 +130,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             {children}
         </AuthContext.Provider>
     );
-};
+}
