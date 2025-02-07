@@ -12,7 +12,7 @@ import {
     RefreshTokenRequest,
     ResetPasswordRequest
 } from '../types/auth.types';
-import { SERVICES } from './constants';
+import { SERVICES } from './api.config';
 
 export class AuthService {
     /**

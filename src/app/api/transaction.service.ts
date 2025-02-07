@@ -1,6 +1,6 @@
 // src/api/transaction.service.ts
 import { transactionsClient } from './client';
-import { SERVICES } from './constants';
+import { SERVICES } from './api.config';
 import { PaginatedResponse } from '../types/pagination';
 import { Offer } from '../types/offer';
 import { Partner } from '../types/partner';
@@ -8,44 +8,30 @@ import { Transaction, TransactionFilter } from '../types/transaction';
 
 export const TransactionsService = {
   /**
-   * Fetch all partners
+   * Fetch all active partners with their active offers
    */
-  async listPartners(): Promise<PaginatedResponse<Partner>> {
+  async listActivePartnersWithOffers(): Promise<PaginatedResponse<Partner>> {
     try {
-      const response = await transactionsClient.get<PaginatedResponse<Partner>>(
-        SERVICES.TRANSACTIONS.ENDPOINTS.PARTNERS
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching partners', error);
-      throw error;
-    }
-  },
+      console.log('[TransactionsService] Fetching active partners with offers');
+      const response = await transactionsClient
+        .get<PaginatedResponse<Partner>>(SERVICES.TRANSACTIONS.ENDPOINTS.PARTNERS_ACTIVE_WITH_OFFERS)
 
-  /**
-   * Fetch active offers from transactions service
-   * @returns List of active offers
-   */
-  async listActiveOffers(): Promise<PaginatedResponse<Offer>> {
-    try {
-      const response = await transactionsClient.get<PaginatedResponse<Offer>>(
-        SERVICES.TRANSACTIONS.ENDPOINTS.ACTIVE_OFFERS
-      );
+      console.log('[TransactionsService] Successfully fetched partners with offers:', {
+        partnersCount: response.data.data.length,
+        totalOffers: response.data.data.reduce((acc, partner) => acc + partner.offers.length, 0)
+      });
       return response.data;
     } catch (error) {
-      console.error('Error fetching active offers', error);
+      console.error('[TransactionsService] Error fetching partners with offers:', error);
       throw error;
     }
   },
 
   /**
    * Retrieve user transactions with optional filters
-   * @param userId User identifier
-   * @param filters Optional transaction filtering parameters
-   * @returns Paginated list of transactions
    */
   async listUserTransactions(
-    userId: string, 
+    userId: string,
     filters?: TransactionFilter
   ): Promise<PaginatedResponse<Transaction>> {
     try {
@@ -55,7 +41,7 @@ export const TransactionsService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error fetching user transactions', error);
+      console.error('Error fetching user transactions:', error);
       throw error;
     }
   }

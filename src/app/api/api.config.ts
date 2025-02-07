@@ -35,7 +35,7 @@ export const SERVICES = {
       PORT: API_CONFIG.PORTS.TRANSACTIONS,
       BASE_URL: `${API_CONFIG.BASE_HOST}:${API_CONFIG.PORTS.TRANSACTIONS}/${API_CONFIG.API_PREFIX}/${API_CONFIG.VERSION}`,
       ENDPOINTS: {
-        PARTNERS: '/partners',
+        PARTNERS_ACTIVE_WITH_OFFERS: '/partners/activewithoffers',
         OFFERS: '/offers',
         ACTIVE_OFFERS: '/offers/active',
         USER_TRANSACTIONS: '/users/:userID/transactions',

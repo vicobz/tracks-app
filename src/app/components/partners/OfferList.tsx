@@ -3,42 +3,42 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable, Image, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { Partner } from '../../types/partner';
-import { colors } from '../../styles/theme';
 import { Offer } from '../../types/offer';
+import { colors } from '../../styles/theme';
 import Loader from '../common/Loader';
 import { format } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 
 interface OfferListProps {
-    partner: Partner | undefined;
-    type: 'EARN' | 'SPEND';
+    offers: Offer[];
+    isLoading?: boolean;
+    partnerId: string;
 }
 
-export default function OfferList({ partner, type }: OfferListProps) {
+export default function OfferList({ offers, isLoading, partnerId }: OfferListProps) {
     const router = useRouter();
+    console.log('OfferList - Received offers:', offers);
 
-    if (!partner) {
+    if (isLoading) {
         return <Loader />;
     }
 
-    const offers = partner.offers?.filter(offer => offer.type === type) || [];
-
     const handleOfferPress = (offer: Offer) => {
+        console.log('OfferList - Handling press for offer:', offer);
         router.push({
             pathname: '/offer/[id]',
             params: {
                 id: offer.id,
-                partnerId: partner.id
+                partnerId: offer.partner_id // Using snake_case from API
             }
         });
     };
 
-    if (offers.length === 0) {
+    if (!offers || offers.length === 0) {
         return (
             <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}>
-                    Aucune offre {type === 'EARN' ? 'EARN' : 'SPEND'} disponible
+                    Aucune offre disponible
                 </Text>
             </View>
         );
@@ -62,20 +62,24 @@ export default function OfferList({ partner, type }: OfferListProps) {
                                 onPress={() => handleOfferPress(offer)}
                             >
                                 <View style={styles.imageWrapper}>
-                                    <Image
-                                        source={{ uri: offer.imageUrl }}
-                                        style={styles.image}
-                                        resizeMode="cover"
-                                    />
+                                    {offer.image_url && (
+                                        <Image
+                                            source={{ uri: offer.image_url }}
+                                            style={styles.image}
+                                            resizeMode="cover"
+                                        />
+                                    )}
                                 </View>
 
                                 <View style={styles.contentContainer}>
                                     <Text style={styles.name} numberOfLines={1}>
                                         {offer.name}
                                     </Text>
-                                    <Text style={styles.description} numberOfLines={2}>
-                                        {offer.description}
-                                    </Text>
+                                    {offer.description && (
+                                        <Text style={styles.description} numberOfLines={2}>
+                                            {offer.description}
+                                        </Text>
+                                    )}
                                     <View style={styles.details}>
                                         <View style={styles.pointsContainer}>
                                             <Text
@@ -84,18 +88,18 @@ export default function OfferList({ partner, type }: OfferListProps) {
                                                     { color: offer.type === 'EARN' ? colors.green : colors.blueAero }
                                                 ]}
                                             >
-                                                {type === 'EARN' ? '+' : ''}{offer.points} Tracks
+                                                {offer.type === 'EARN' ? '+' : ''}{offer.max_points} Tracks
                                             </Text>
-                                            {offer.validUntil && (
+                                            {offer.valid_to && (
                                                 <Text style={styles.validity}>
-                                                    Expires on {format(new Date(offer.validUntil), 'dd MMM yyyy', { locale: enGB })}
+                                                    Expires on {format(new Date(offer.valid_to), 'dd MMM yyyy', { locale: enGB })}
                                                 </Text>
                                             )}
                                         </View>
-                                        {offer.price && (
+                                        {offer.min_amount > 0 && (
                                             <View style={styles.priceContainer}>
                                                 <Text style={styles.price}>
-                                                    {offer.price} {offer.currency}
+                                                    Min. {offer.min_amount}€
                                                 </Text>
                                             </View>
                                         )}

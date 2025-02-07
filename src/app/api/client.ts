@@ -2,7 +2,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { TokenStorage } from '../storage/token.storage';
 import { Platform } from 'react-native';
-import { SERVICES } from './constants';
+import { SERVICES } from './api.config';
 
 /**
  * Creates a configured Axios client with optional authentication

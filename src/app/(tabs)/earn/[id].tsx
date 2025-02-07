@@ -5,19 +5,40 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { usePartners } from '../../hooks/usePartners';
 import { colors } from '../../styles/theme';
 import OfferList from '../../components/partners/OfferList';
+import Loader from '../../components/common/Loader';
 
 export default function PartnerScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
-    const { getPartnerById } = usePartners();
+    const { getPartnerById, isLoading } = usePartners();
     
     const partner = getPartnerById(id);
+    console.log('PartnerScreen - Partner:', partner);
     
+    // Handle loading state
+    if (isLoading && !partner) {
+        return <Loader />;
+    }
+    
+    // Handle invalid partner ID
     if (!partner) {
+        console.log('PartnerScreen - No partner found for id:', id);
         router.back();
         return null;
     }
+
+    // Filter active offers of the current type (EARN)
+    const activeOffers = partner.offers.filter(offer => 
+        offer.status === 'ACTIVE' && 
+        offer.type === 'EARN' &&
+        new Date(offer.valid_to) > new Date()
+    );
     
+    console.log('PartnerScreen - Filtered offers:', {
+        count: activeOffers.length,
+        activeOffers
+    });
+
     return (
         <ScrollView style={styles.container} bounces={false}>
             <View style={styles.header}>
@@ -40,10 +61,16 @@ export default function PartnerScreen() {
                 )}
 
                 <View style={styles.offersSection}>
-                    <Text style={styles.offersTitle}>Les offres de {partner.name}</Text>
+                    <Text style={styles.offersTitle}>
+                        {activeOffers.length > 0 
+                            ? `Les offres de ${partner.name}`
+                            : 'Aucune offre disponible actuellement'}
+                    </Text>
+                    
                     <OfferList 
-                        partner={partner}
-                        type="EARN"
+                        offers={activeOffers}
+                        isLoading={isLoading}
+                        partnerId={partner.id}
                     />
                 </View>
             </View>
@@ -65,13 +92,6 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 16,
-    },
-    partnerType: {
-        fontSize: 12,
-        color: colors.green,
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        marginBottom: 8,
     },
     name: {
         fontSize: 24,
@@ -98,5 +118,5 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#FFFFFF',
         marginBottom: 16,
-    },
+    }
 });

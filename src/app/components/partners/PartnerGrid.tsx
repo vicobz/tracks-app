@@ -1,45 +1,60 @@
 // src/components/partners/PartnerGrid.tsx
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { useCallback } from 'react';
+import { View, FlatList, Text, StyleSheet, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Partner } from '../../types/partner';
 import PartnerCard from './PartnerCard';
 import Loader from '../common/Loader';
+import { colors } from '../../styles/theme';
 
 interface PartnerGridProps {
     partners: Partner[];
     isLoading: boolean;
     type: 'EARN' | 'SPEND';
+    onRefresh: () => Promise<void>;
 }
 
-export default function PartnerGrid({ partners, isLoading, type }: PartnerGridProps) {
+export default function PartnerGrid({ 
+    partners, 
+    isLoading, 
+    type,
+    onRefresh 
+}: PartnerGridProps) {
     const router = useRouter();
 
-    if (isLoading) return <Loader />;
-
-    const featuredPartners = partners.filter(p => p.type === 'BOTH');
-    const otherPartners = partners.filter(p => p.type !== 'BOTH');
-
-    const navigateToPartner = (partnerId: string) => {
+    // Callbacks definition - keep them at the top level
+    const navigateToPartner = useCallback((partnerId: string) => {
         const path = type === 'EARN' ? '/earn/[id]' as const : '/spend/[id]' as const;
-            
         router.push({
             pathname: path,
             params: { id: partnerId }
         });
-    };
+    }, [type, router]);
+
+    const renderPartnerItem = useCallback(({ item }: { item: Partner }) => (
+        <PartnerCard 
+            partner={item}
+            onPress={() => navigateToPartner(item.id)}
+        />
+    ), [navigateToPartner]);
+
+    const keyExtractor = useCallback((item: Partner) => item.id, []);
+
+    // Conditional returns after hooks
+    if (isLoading && partners.length === 0) {
+        return <Loader />;
+    }
+
+    const featuredPartners = partners.filter(p => p.type === 'BOTH');
+    const otherPartners = partners.filter(p => p.type !== 'BOTH');
 
     const renderSection = (title: string, data: Partner[]) => (
         <View style={styles.section}>
             <Text style={styles.sectionTitle}>{title}</Text>
             <FlatList
                 data={data}
-                renderItem={({ item }) => (
-                    <PartnerCard 
-                        partner={item}
-                        onPress={() => navigateToPartner(item.id)}
-                    />
-                )}
-                keyExtractor={(item) => item.id}
+                renderItem={renderPartnerItem}
+                keyExtractor={keyExtractor}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.horizontalGrid}
@@ -57,7 +72,7 @@ export default function PartnerGrid({ partners, isLoading, type }: PartnerGridPr
                     <Text style={styles.headerSubtitle}>
                         {type === 'EARN' 
                             ? 'Gagnez des points en achetant des produits et des services durables 🌱'
-                            : 'Convertissez vos points produits et services éco-responsables 🌱'}
+                            : 'Convertissez vos points en produits et services éco-responsables 🌱'}
                     </Text>
                 </View>
             }
@@ -66,8 +81,23 @@ export default function PartnerGrid({ partners, isLoading, type }: PartnerGridPr
                 <View>
                     {featuredPartners.length > 0 && renderSection('Nos favoris', featuredPartners)}
                     {otherPartners.length > 0 && renderSection('Toutes les offres', otherPartners)}
+                    {partners.length === 0 && !isLoading && (
+                        <View style={styles.emptyState}>
+                            <Text style={styles.emptyText}>
+                                Aucun partenaire disponible pour le moment
+                            </Text>
+                        </View>
+                    )}
                 </View>
             )}
+            refreshControl={
+                <RefreshControl
+                    refreshing={isLoading}
+                    onRefresh={onRefresh}
+                    tintColor={colors.secondary}
+                    colors={[colors.secondary]} // Android
+                />
+            }
             contentContainerStyle={styles.container}
         />
     );
@@ -105,5 +135,16 @@ const styles = StyleSheet.create({
     },
     horizontalGrid: {
         paddingHorizontal: 8,
+    },
+    emptyState: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 32,
+    },
+    emptyText: {
+        color: 'rgba(255, 255, 255, 0.6)',
+        fontSize: 16,
+        textAlign: 'center',
     },
 });
