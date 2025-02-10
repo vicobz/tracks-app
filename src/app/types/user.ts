@@ -7,4 +7,5 @@ export interface User {
     // address: string;
     tracksBalance: number;
     tracksLoyaltyNumber: string;
+    subscriptionType: string;
 }

@@ -1,10 +1,10 @@
 // src/app/(auth)/signin.tsx
-import { useState } from 'react';
-import { 
-    View, 
-    Text, 
-    TextInput, 
-    TouchableOpacity, 
+import { useEffect, useState } from 'react';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
     StyleSheet,
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -13,7 +13,7 @@ import {
     Alert
 } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { colors } from '../styles/theme';
 import { isValidEmail } from '../utils/validation';
 
@@ -21,7 +21,22 @@ export default function SignInScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { signIn, isLoading, error } = useAuth();
+
+    const router = useRouter();
+    
+    const { signIn, isLoading, error, isAuthenticated } = useAuth();
+    
+    useEffect(() => {
+        console.log("Authentication state changed:", { 
+            isAuthenticated, 
+            isLoading 
+        });
+
+        if (isAuthenticated && !isLoading) {
+            console.log("Navigating to tabs");
+            router.replace('/(tabs)/earn');
+        }
+    }, [isAuthenticated, isLoading]);
 
     const handleSignIn = async () => {
         // Form validation
@@ -54,8 +69,8 @@ export default function SignInScreen() {
     };
 
     return (
-        <KeyboardAvoidingView 
-            style={styles.container} 
+        <KeyboardAvoidingView
+            style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
         >
@@ -66,7 +81,7 @@ export default function SignInScreen() {
                 <View style={styles.content}>
                     <Text style={styles.title}>Welcome to Tracks</Text>
                     <Text style={styles.subtitle}>Sign in to continue</Text>
-                    
+
                     <View style={styles.form}>
                         <TextInput
                             style={styles.input}
@@ -78,7 +93,7 @@ export default function SignInScreen() {
                             keyboardType="email-address"
                             editable={!isSubmitting}
                         />
-                        
+
                         <TextInput
                             style={styles.input}
                             placeholder="Password"
@@ -120,9 +135,9 @@ export default function SignInScreen() {
                             {error.message}
                         </Text>
                     )}
-                    
+
                     <Link href="/(auth)/signup" asChild>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={styles.linkButton}
                             disabled={isSubmitting || isLoading}
                         >

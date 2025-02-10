@@ -29,7 +29,7 @@ export default function OfferList({ offers, isLoading, partnerId }: OfferListPro
             pathname: '/offer/[id]',
             params: {
                 id: offer.id,
-                partnerId: offer.partner_id // Using snake_case from API
+                partnerId: offer.partner_id
             }
         });
     };

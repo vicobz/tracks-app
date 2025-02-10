@@ -5,16 +5,19 @@ import { AuthService } from '../../api/auth.service';
 import { TokenStorage } from '../../storage/token.storage';
 import { User } from '../../types/user';
 import { ApiError } from '../../types/auth.types';
+import { useProtectedRoute } from '../../hooks/useProtectedRoute';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<ApiError | null>(null);
 
+    useProtectedRoute(user);
+
     const checkAuthState = async () => {
         try {
             const refreshToken = await TokenStorage.getRefreshToken();
-            
+
             if (!refreshToken) {
                 setUser(null);
                 return;
@@ -28,6 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 lastName: authResponse.user.last_name,
                 tracksBalance: authResponse.user.tracks_balance,
                 tracksLoyaltyNumber: authResponse.user.loyalty_number,
+                subscriptionType: "FREE", // TODO : update this logic to properly set subscription type
             });
         } catch (error) {
             await TokenStorage.clearTokens();
@@ -38,15 +42,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    useEffect(() => {
-        checkAuthState();
-    }, []);
+    useEffect(() => { checkAuthState() }, []);
 
     const signIn = async (email: string, password: string) => {
         setIsLoading(true);
         setError(null);
         try {
             const response = await AuthService.login({ email, password });
+            console.log("Login response:", response);
             setUser({
                 id: response.user.id,
                 email: response.user.email,
@@ -54,6 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 lastName: response.user.last_name,
                 tracksBalance: response.user.tracks_balance,
                 tracksLoyaltyNumber: response.user.loyalty_number,
+                subscriptionType: "FREE", // TODO : update this logic
             });
         } catch (error) {
             setError(error as ApiError);
@@ -80,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 lastName: response.user.last_name,
                 tracksBalance: response.user.tracks_balance,
                 tracksLoyaltyNumber: response.user.loyalty_number,
+                subscriptionType: "FREE", // TODO : update this logic
             });
         } catch (error) {
             setError(error as ApiError);
